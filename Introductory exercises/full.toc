@@ -1,0 +1,13 @@
+\contentsline {section}{\numberline {1}Introduction}{2}
+\contentsline {section}{\numberline {2}Data Input}{2}
+\contentsline {subsection}{\numberline {2.1}Assign}{2}
+\contentsline {subsection}{\numberline {2.2}Data import}{3}
+\contentsline {subsection}{\numberline {2.3}Subsetting}{3}
+\contentsline {section}{\numberline {3}Basic Arithmetic}{4}
+\contentsline {subsection}{\numberline {3.1}Vector arithmetic}{4}
+\contentsline {subsection}{\numberline {3.2}Logical operators}{6}
+\contentsline {section}{\numberline {4}Plotting}{8}
+\contentsline {section}{\numberline {5}Functions}{9}
+\contentsline {section}{\numberline {6}If-statements}{11}
+\contentsline {section}{\numberline {7}For-loops}{12}
+\contentsline {section}{\numberline {8}Pseudo-random Number Generation}{13}

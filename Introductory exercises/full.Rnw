@@ -1,0 +1,511 @@
+\documentclass{article}
+
+\newtheorem{exercise}{Exercise}[section]
+%\newtheorem{exercise}{Exercise}
+
+\usepackage{amsmath}
+
+\title{Exercises for Alnarp R Group}
+
+\begin{document}
+<<echo = FALSE>>=
+set.seed(8)
+@
+
+\maketitle
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+This is a collection of instructions and exercises for R, sometimes stolen shamelessly from sources unknown, intended to serve as introductory material for an R discussion group at SLU-Alnarp.
+
+\section{Data Input}
+\subsection{Assign}
+Assign data to an object using \texttt{<-}. Print by writing the object name.
+<<>>=
+a <- 4
+a
+@
+
+Create a vector (multiple data points) using \texttt{c} as a function. Possible to reassign using the newly created object. A sequence of natural numbers can be created using \texttt{:} .
+<<>>=
+a <- c(4, 2)
+a
+
+b <- c(a, a)
+b
+
+1:4
+@
+
+The class \texttt{data.frame} can contain multiple vectors. The usual format for data is variables as columns, observations as rows (the old VAC-OAR). The class of an object can be retrieved using the function \texttt{class}.
+<<>>=
+c <- c("A", "B", "C", "D")
+d <- data.frame("Name" = c, "Value" = b)
+d
+class(d)
+@
+
+An alternative to \texttt{<-} is \texttt{assign}. This allows to create an object based on a name (a string of characters). The \texttt{get} function allows to print an object using the name.
+<<>>=
+assign("a", 4)
+get("a")
+@
+
+\begin{exercise}
+Create a vector of four numbers.
+\end{exercise}
+
+\begin{exercise} \label{exDf}
+Create a data frame with four columns of four numbers each.
+\end{exercise}
+
+\subsection{Data import}
+Data can be imported from other sources in multiple ways. Simple \texttt{.txt} or \texttt{.csv} files can be read using \texttt{read.table}. 
+Excel can be imported using the \texttt{readxl} package.
+The \texttt{foreign} package provides functions to import data from files associated with SAS, SPSS, Minitab and more.
+
+<<eval=FALSE>>=
+#Read from a csv-file with column names in a header
+read.csv("C:\\Users\\Bingo\\Documents\\data1.csv", header = T)
+
+#Load readxl package and read Sheet 1 in excel file data1
+library(readxl) #Load package readxl
+read_excel("C:\\Users\\Bingo\\Documents\\data1.xlsx", 
+           col_names= TRUE, sheet = "Sheet 1")
+@
+
+\subsection{Subsetting}
+Objects can be subset using indices in square bracket \texttt{[]}.
+<<>>=
+a <- 3:7
+a
+a[2]
+a[2:3]
+@
+Data frames require specifying a row and a column, separated by a comma. Vectors can be used as indices to extract multiple cells
+<<>>=
+b <- data.frame(var1 = 1:5, var2 = 4:8)
+b
+b[2, 1] #Second row, first column
+b[2, ] #Entire second row
+b[1:3, 1] #First three elements of first column
+b$var1 #First column using the dollar sign operator
+@
+
+\begin{exercise}
+Select the fourth row of the third column from the data frame created in exercise \ref{exDf}. 
+\end{exercise}
+
+\begin{exercise} \label{CO2ex}
+Load the CO2 dataset using \texttt{data("CO2")}. Print rows $10$ to $20$ for all columns. Print the column named Treatment. 
+\end{exercise}
+
+\section{Basic Arithmetic}
+\subsection{Vector arithmetic}
+Single data points follow the standard rules of arithmetic.
+<<>>=
+a <- 4
+a + 1
+a * 2
+a ^ 2
+a / 8
+@
+Operators on a vector and a single data point calculates the operation for each point in the vector
+<<>>=
+a <- c(4, 7)
+a + 1
+a * 2
+a ^ 2
+a / 8
+@
+Operators on vectors calculates the pairwise operation, if the vectors are of equal length.
+<<>>=
+b <- c(1, 2)
+a + b
+a * b
+a ^ b
+a / b
+@
+
+\begin{exercise}
+Create two numerical vectors of length eight. Add the vectors together. Multiply the vectors together.
+\end{exercise}
+
+\begin{exercise}
+Create two numerical vectors, one of length three and one of length four. Add them together - what happens?
+\end{exercise}
+
+\begin{exercise}
+Create two numerical vectors, one of length three and one of length nine. Add them together - what happens?
+\end{exercise}
+
+\begin{exercise}
+What does \texttt{1/0} return? And \texttt{1/Inf}? What about \texttt{0/0}? \texttt{Inf/Inf}?
+\end{exercise}
+
+\subsection{Logical operators}
+Logical operators create a vector of \texttt{TRUE} or \texttt{FALSE}. Equality is given by \texttt{==}, comparisons of magnitude by \texttt{>} and \texttt{<}, inclusion in another set by \texttt{\%in\%} . Logical vectors can be negated (\texttt{TRUE} turns to \texttt{FALSE} and vice versa) by \texttt{!}.
+<<>>=
+a <- c(4,4,8,9)
+a == 4
+a > 4
+a %in% c(4,9)
+
+b <- a == 4
+b
+!b
+@
+Logical vectors can be used to extract subsets.
+<<>>=
+b <- data.frame(var1 = c("A", "A", "B", "C"),
+                var2 = a)
+b
+b[b$var1 == "A", ]
+@
+The \texttt{sum} function can be used to calculate the number of \texttt{TRUE} values. \texttt{any} returns \texttt{TRUE} if at least one value in a vector is \texttt{TRUE} and \texttt{all} returns \texttt{TRUE} if all values in a vector are \texttt{TRUE}
+The function \texttt{which} returns the order numbers of the values which are \texttt{TRUE}.
+
+<<>>=
+a <- c(4,4,8,9)
+sum(a == 4)
+any(a >= 9) #>= for greater than or equal
+any(a > 9)
+all(a < 9)
+all(a <= 9) #<= for less than or equal
+
+b <- a %in% c(4,9)
+b
+which(b)
+@
+
+\begin{exercise}
+Load the CO2 dataset used in exercise \ref{CO2ex}. Use a logical operator to print rows where the variable Type is Quebec. Use a logical operator to find all rows where the variable uptake is greater than $40$.
+\end{exercise}
+
+\begin{exercise} \label{multiples}
+Create a vector of the first $300$ multiples of $3$, i.e. $(3,6,9,...,900)$, and the $180$ first multiples of $5$, i.e. $(5,10,15,...,900)$. How many values in the first vector are also in the second vector? What are the order numbers of those values? How many in the second vector are also in the first? What are their order numbers?
+\end{exercise}
+
+\begin{exercise}
+Redo exercise \ref{multiples}, but with the $60$ first multiples of $6$ and the $90$ first multiples of $4$. How often is a cell in the first vector also in the second vector? And vice versa?
+\end{exercise}
+
+\begin{exercise}
+Take the name of an SLU department and turn it into a vector of letters. Which letter is the most common? At which positions is the letter B? Hint: the function \texttt{substring} can be used to split a string of letters into single cells, e.q. \texttt{substring("SLU", 1:3, 1:3)}.
+\end{exercise}
+
+\begin{exercise}
+The single letters \texttt{T} and \texttt{F} are short-hand for \texttt{TRUE} and \texttt{FALSE}. What is the result of \texttt{TRUE <- 5}? What is the result of \texttt{T <- 5}? What about \texttt{assign("TRUE", 5)} followed by \texttt{get("TRUE")}?
+\end{exercise}
+
+\section{Plotting}
+Some examples of plotting functions, using randomly generated data (more on random numbers in section \ref{PRNG}).
+<<eval = FALSE>>=
+par(mfrow = c(3, 2)) #Print plots in a 3x2 grid
+x <- rnorm(100) #100 random draws from standard normal
+y <- cos(3 * x) #Creates y as cosine of 3 times x
+
+#Scatterplot
+plot(x, y)
+
+#Line plot, x and y both in order of x
+plot(x[order(x)], y[order(x)], type = "l")
+
+#Histogram of x
+hist(x)
+
+#Probability histogram of x (note change of y-axis)
+hist(x, prob = T)
+#Added density function for normal distribution
+lines(seq(-5, 5, 0.01), dnorm(seq(-5, 5, 0.01)))
+
+#Create new data with x nominal, y continuous
+a <- data.frame(x = sample(c("A","B","C"), 100, T),
+                y = rnorm(100))
+
+table(a$x) #Gives the number of obs in each class
+
+#Barplot
+barplot(table(a$x), names.arg = names(table(a$x)),
+        ylab = "Number of observations")
+
+#Boxplot
+boxplot(y ~ x, data = a, boxwex = 0.25)
+@
+
+\begin{figure}
+<<fig.height = 10, echo = FALSE, results = 'hide'>>=
+par(mfrow = c(3, 2)) #Print plots in a 3x2 grid
+x <- rnorm(100) #100 random draws from standard normal
+y <- cos(3 * x) #Creates y as cosine of 3 times x
+
+#Scatterplot
+plot(x, y)
+
+#Line plot, x and y both in order of x
+plot(x[order(x)], y[order(x)], type = "l")
+
+#Histogram of x
+hist(x)
+
+#Probability histogram of x (note change of y-axis)
+hist(x, prob = T)
+#Added density function for normal distribution
+lines(seq(-5, 5, 0.01), dnorm(seq(-5, 5, 0.01)))
+
+#Create new data with x nominal, y continuous
+a <- data.frame(x = sample(c("A","B","C"), 100, T),
+                y = rnorm(100))
+
+table(a$x) #Gives the number of obs in each class
+
+#Barplot
+barplot(table(a$x), names.arg = names(table(a$x)),
+        ylab = "Number of observations")
+
+#Boxplot
+boxplot(y ~ x, data = a, boxwex = 0.25)
+@
+\end{figure}
+
+\begin{exercise}
+Using the CO2 dataset from exercise \ref{CO2ex}, create a histogram of the variable uptake. Use the information from the help page, \texttt{?hist}, to change the main title and the labels for the x and y axes.
+\end{exercise}
+
+\begin{exercise}
+Using the CO2 dataset, create a boxplot of uptake seperated by the variables Type and Treatment.
+\end{exercise}
+
+\begin{exercise}
+Using the CO2 dataset, create a scatterplot with the variable uptake on the y axis and the variable conc on the x axis. Make the observations for Type Quebec a different color from those of Type Mississippi.
+\end{exercise}
+
+\section{Functions}
+User-defined functions are constructed using the \texttt{function} function (*sigh*). The value of the final line of the function gives the output of the function.
+<<>>=
+f <- function(x){
+  y <- x + 2
+  y
+}
+
+f(3)
+
+f(c(3, 4)) #The function f acts on both cells in the input vector.
+@
+The last call, with a vector as an input, works because the operations in the specific function \texttt{f} work with a vector.
+<<>>=
+c(3, 4) + 2
+@
+Functions can have multiple objects as input and return any object.
+<<>>=
+g <- function(x1, x2){
+  y <- data.frame(var1 = c("A", "B"),
+                  var2 = c(x1, x2))
+  y
+}
+
+g(4, 6)
+@
+
+\begin{exercise}
+Write a function which takes a vector and returns the second-last element. Note: the \texttt{length} function returns the number of elements in a vector.
+\end{exercise}
+
+\begin{exercise}
+Given two numerical vectors, $u$ and $v$, of equal length $n$, the squared Euclidean distance is defined by
+\begin{equation}
+d(v,u)=\sum_{i=1}^n (u_i - v_i)^2.
+\end{equation}
+For example, the distance between the vectors $v = (1,3,5)$ and $u = (6,3,9)$ is given by
+\begin{equation}
+\begin{split}
+d(v,u) &= (1-6)^2 + (3-3)^2 + (5-9)^2 \\
+&= 5^2 + 0^2 + 4^2 \\ 
+&= 25 + 0 + 16 \\
+&= 41.
+\end{split}
+\end{equation}
+Write a function which takes two equal length vectors as input and returns the squared Euclidean distance.
+\end{exercise}
+
+\begin{exercise} \label{halfFun}
+A point on the plane can be described as two numbers in a vector of length two $(x,y)$, e.q. $(4,2)$ is the point which is four on the x axis and two on the y axis. Create a function which takes two points in the plane and returns the point which is half-way between the two points. For example, the inputs $(4,2)$ and $(2,8)$ should return $(3,5)$.
+\end{exercise}
+
+\section{If-statements}
+Operations can be made conditional using an if-statement.
+<<>>=
+f <- function(x){
+  if(x > 4) {print("Greater than four")} else{
+    print("Less than or equal to four")
+  }
+}
+
+f(3)
+f(5)
+@
+
+\begin{exercise}
+Create a function which takes a single numerical value as input and returns \texttt{"Even"} if the input is even and \texttt{"Odd"} if the input is odd.
+\end{exercise}
+
+\section{For-loops}
+For-loops can be used to reproduce a set of code multiple times, cycling through the input.
+<<>>=
+a <- c(3, 2, 5)
+for(i in a){
+  print(i + 1)
+}
+@
+The code in the loop does not have to depend on current value in the loop.
+<<>>=
+for(i in a){
+  print(1)
+}
+@
+For-loops can be used to calculate recursive sequences. Take for example the Fibonacchi sequence defined by
+%\begin{equation}
+\begin{align*}
+& a_0 = a_1 = 1 \\
+& a_i = a_{i-1} + a_{i-2} \qquad i \geq 2,
+\end{align*}
+%\end{equation}
+and beginning $(1,1,2,3,5,8,13,21,34,...)$.
+<<>>=
+n <- 10 #The length of the sequence
+a <- numeric() #Sets up an empty numerical vector
+a[1] <- a[2] <- 1 #First two cells are 1
+for(i in 3:n){
+  a[i] <- a[i-1] + a[i-2] #Next cell is sum of preceeding two
+}
+
+a
+@
+
+\begin{exercise}
+Create a for-loop which loops over the letters of the alphabet (available as \texttt{LETTERS}) and for each step of the loop adds the new letter to the preceeding letters (so that, for example, the third step is \texttt{"ABC"}) and prints the string of letters. Hint: \texttt{paste} can be used to concatenate two character strings.
+\end{exercise}
+
+\begin{exercise}
+Create a function which takes a natural number $n$ as input and returns the $n$th Fibonacchi number. 
+\end{exercise}
+
+\begin{exercise}
+Find the smallest Fibonacchi number greater than $1 000 000$.
+\end{exercise}
+
+\begin{exercise}
+What happens to the ratio between two Fibonacchi number, $a_i/a_{i-1}$, as $i$ gets larger? Does it converge to some specific number? If so, what is the square of the atomic number of the element associated with that number?
+\end{exercise}
+
+\section{Pseudo-random Number Generation} \label{PRNG}
+Pseudo-random numbers are numbers created using a deterministic process, intended to emulate completely random numbers. R includes functions to draw numbers from a large number of different distributions.
+<<>>=
+par(mfrow = c(2,2))
+
+#Uniform distribution, a = 0, b = 1
+x <- runif(1000)
+hist(x, main = "U(0,1)")
+
+#Normal distribution, mean = 0, sd = 1
+x <- rnorm(1000)
+hist(x, main = "N(0,1)")
+
+#Poisson distribution, lambda = 3
+x <- rpois(1000, lambda = 3)
+barplot(table(x), main = "Po(3)")
+
+#Binomial distribution, n = 5, p = 0.3
+x <- rbinom(1000, size = 5, prob = 0.3)
+barplot(table(x), main = "Bin(5, 0.3)")
+@
+Random numbers can be used to test if methods and functions work as intended.
+As an example, we investigate the distribution of a mean value. Based on theory, one expects the mean value of $100$ observations from a standard normal distribution to be normal with mean $\mu=0$ and standard deviation $\sigma = 0.1$. To test this, we simulate the situation multiple times and store the mean values.
+<<fig.height = 4, fig.align = 'center'>>=
+meanValues <- numeric()
+for(i in 1:10000){
+  x <- rnorm(100, mean = 0, sd = 1)
+  meanValues[i] <- mean(x)
+}
+
+mean(meanValues)
+sd(meanValues)
+
+par(mfrow = c(1,1))
+hist(meanValues, prob = T)
+lines(seq(-1, 1, 0.01), dnorm(seq(-1, 1, 0.01), 
+                              mean = 0, sd = 0.1))
+@
+The simulated result supports the theoretical calculation.
+
+Another common use of random numbers is to evaluate integrals. Recall the intuitive understanding of an integral as an area under a curve. If the curve is contained in a rectangle, and random points simulated in the rectangle, the area under the curve can be estimated as the proportion of points that are below the curve times the area of the rectangle.
+
+For example, take
+\begin{equation}
+f(x) = \sqrt{1-x^2} \qquad x \in (0,1),
+\end{equation}
+the curve which gives the upper right part of the unit circle.
+<<fig.height=3.5, fig.width=3, fig.align='center'>>=
+x <- seq(0.01, 0.99, 0.01)
+plot(x, sqrt(1 - x^2), type = "l", cex.axis = 0.5, 
+     cex.lab = 0.75, ylab = expression(sqrt("1-x"^2)))
+@
+We simulate from the $1 \times 1$ rectangle with base $(0,0)$ and check if the random number $y$ if smaller than $\sqrt{1-x^2}$ for the random number $x$. The area of the rectangle is $1$, so the estimate of the integral is given directly by the proportion of points below the curve.
+<<>>=
+underTheCurve <- numeric()
+for(i in 1:10000){
+  x <- runif(1)
+  y <- runif(1)
+  yUnderCurve <- y < sqrt(1 - x^2)
+  underTheCurve[i] <- yUnderCurve
+}
+integralEstimate <- mean(underTheCurve)
+integralEstimate
+@
+Note that the mean of a logical vector returns the proportion of cells with value \texttt{TRUE}.
+
+Since our integral is one fourth of the unit circle, and the unit circle should have an area given by $\pi$, four times our integral estimate gives an estimate of the constant $\pi \approx 3.14$.
+<<>>=
+4 * integralEstimate
+pi
+@
+
+\begin{exercise}
+Simulate $10$ numbers from a normal distribution with mean $0$ and standard deviation $1$. What is the maximum value? Repeat with $100$ numbers, $1000$ numbers, and so on, until you are bored.
+\end{exercise}
+
+\begin{exercise}
+Use the simulation approach to evaluate the area under the curve $\sqrt{x+1}$ for $x$ in the interval $(0,2)$, i.e. $x$ between $0$ and $2$. The solution should be close to $2.80$.
+\end{exercise}
+
+\begin{exercise}
+Use the simulation approach to evaluate the area under the curve 
+\begin{equation}
+f(x) = \frac{1}{\sqrt{2 \pi}} e^{-\frac{1}{2} x^2}
+\end{equation}
+for $x$ in the interval $(-1.96,1.96)$. Note that the curve is the density function of a standard normal distribution - what is the probability of being between $-1.96$ and $1.96$?
+\end{exercise}
+
+\begin{exercise}
+Draw $1000$ numbers from a Poisson distribution with $\lambda = 3$ and $1000$ numbers from a binomial distribution with $n=100$ and $p = 0.03$. Plot the random draws using two bar charts. Are the plots similar?
+\end{exercise}
+
+\begin{exercise}
+Theory states that a binomial distribution with some $n$ and a probability of $3/n$ approaches a Poisson distribution with $\lambda=3$ as $n$ increases. Examine if this is true by simulating $1000$ random numbers from a binomial with $n$ equal to $10$, $100$, $1000$ and $10000$ and comparing to a distribution of random numbers from the Poisson distribution.
+\end{exercise}
+
+\begin{exercise}
+Create a vector of points in the two-dimensional plane using the following scheme. 
+\begin{enumerate}
+\item Let $a=(0,0)$, $b=(1,1)$ and $c=(2,0)$.
+\item Let $d_0 = (1,0.5)$.
+\item Given $d_{i-1}$, calculate $d_i$ as the point half-way between $d_{i-1}$ and a random choice of $a$, $b$ and $c$.
+\item Repeat the previous step until you reach $d_{1000}$.
+\item Plot the set of points.
+\end{enumerate}
+Hint: in exercise \ref{halfFun} you were asked to write a function which takes two points in the plane and returns the point between the two points.
+\end{exercise}
+
+\end{document}
