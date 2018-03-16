@@ -1,0 +1,85 @@
+---
+title: "Binomial and logistic regression in R"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Introduction and example set
+Binomial and logistic regression are probably the most widely used tools to analyze regression data where the response variable y is a binary variable. A typical example of such data could be an olfactometer experiment where the response variable is the choice of an insect (left or right) and a set of explanatory variables x are given by properties of the individual insect (species, sex etc) and the choice of treatment in the olfactometer. We simulate such an example set.
+
+```{r}
+set.seed(7)
+data1 <- data.frame(sex = rep(c("m", "f"), each = 18),
+                    treat = rep(letters[1:3], 12))
+data1$pos <- rnorm(36) + rnorm(2)[as.numeric(data1$sex)] + rnorm(3)[as.numeric(data1$treat)]
+data1$pos <- with(data1, rbinom(36, 1, exp(pos) / (1 + exp(pos))))
+
+head(data1)
+```
+
+Each observation is one insect's choice between the treatment and a control. The response `pos` is 1 if the insect goes in the direction of the treatment and 0 if the insect goes for the control.
+
+One crucial aspect of data such as this (a binary response and discrete variables as explanatory), is that it can be aggregated without loss of information.
+
+```{r}
+data2 <- aggregate(pos ~ sex + treat, data1, sum)
+data2$neg <- with(data2, 6 - pos)
+data2$trials <- 6
+
+data2
+```
+
+Instead of one row per insect `data2` contains one row per sex-treatment combination. The response `pos` gives the number of positives out of the 6 trials.
+
+#Logistic regression and binomial regression
+##Fixed effects
+Given that the data can be presented in two ways (per observation or per treatment), it makes sense that it can be modelled in two different ways. We can either model the data using the binary variables `data1$pos` as response, or using the aggregated variable `data2$pos`. In the latter case we need to include the information about the number of trials `data2$trials` as well. The `glm` function allows for both formulations. We start with the per-observation-formulation.
+
+```{r}
+mod1 <- glm(pos ~ sex + treat, data1, family = binomial)
+
+summary(mod1)
+
+library(car)
+Anova(mod1)
+```
+
+The first option specifies the formula in the standard format. The `family` option specifies the distribution of the generalized linear model. The standard link for the binomial family is the logit function.
+
+As for the aggregated data, there are two equivalent formulations. In the top one the response is written as the ratio between the number of positive outcomes and the number of trials, and the number of trials is added as a weight variables.
+In the second formulation, the number of positive outcomes and the number of negative outcomes (number of trials minus the number of positive outcomes) are binded into a matrix with two columns using `cbind(pos, neg)`, and this matrix is used as the response variable.
+
+```{r}
+mod2 <- glm(pos/trials ~ sex + treat, data2, family = binomial, weights = trials)
+mod3 <- glm(cbind(pos, neg) ~ sex + treat, data2, family = binomial)
+
+summary(mod2)
+summary(mod3)
+
+Anova(mod2)
+Anova(mod3)
+```
+
+All three models give the same parameter estimation, the same standard errors of parameters, and the same results in likelihood ratio tests. The deviance does however differ, due to the connection between deviance and likelihood, and the differences in likelihood between the models.
+
+##Random effects
+We move to the situation with random factors: sex remains a fixed effect, but the treatment is a random effect. Estimation is done using the `glmer` function from the `lme4` package.
+```{r}
+library(lme4)
+mod1 <- glmer(pos ~ sex + (1 | treat), data1, family = binomial)
+mod2 <- glmer(pos/trials ~ sex + (1 | treat), data2, family = binomial, weights = trials)
+mod3 <- glmer(cbind(pos, neg) ~ sex + (1 | treat), data2, family = binomial)
+
+summary(mod1)
+summary(mod2)
+summary(mod3)
+```
+
+The function support all three formula variations and the resulting parameter estimations are the same. As before, the likelihood-based information critera differ between the model on data in long form (with the binary outcome) and the models on data in aggregated form (the binomial outcome).
+
+#Diagnostics
+
+#Theory
