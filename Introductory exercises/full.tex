@@ -163,11 +163,15 @@ The \texttt{foreign} package provides functions to import data from files associ
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{#Read from a csv-file with column names in a header}
-\hlkwd{read.csv}\hlstd{(}\hlstr{"C:\textbackslash{}\textbackslash{}Users\textbackslash{}\textbackslash{}Bingo\textbackslash{}\textbackslash{}Documents\textbackslash{}\textbackslash{}data1.csv"}\hlstd{,} \hlkwc{header} \hlstd{= T)}
+\hlcom{#The file must be located in the current working directory.}
+\hlkwd{getwd}\hlstd{()} \hlcom{#See current working directory}
+\hlcom{#Set new working directory.}
+\hlkwd{setwd}\hlstd{(}\hlstr{"C:\textbackslash{}\textbackslash{}Users\textbackslash{}\textbackslash{}Bingo\textbackslash{}\textbackslash{}Documents"}\hlstd{)}
+\hlkwd{read.csv}\hlstd{(}\hlstr{"data1.csv"}\hlstd{,} \hlkwc{header} \hlstd{= T)}
 
 \hlcom{#Load readxl package and read Sheet 1 in excel file data1}
 \hlkwd{library}\hlstd{(readxl)} \hlcom{#Load package readxl}
-\hlkwd{read_excel}\hlstd{(}\hlstr{"C:\textbackslash{}\textbackslash{}Users\textbackslash{}\textbackslash{}Bingo\textbackslash{}\textbackslash{}Documents\textbackslash{}\textbackslash{}data1.xlsx"}\hlstd{,}
+\hlkwd{read_excel}\hlstd{(}\hlstr{"data1.xlsx"}\hlstd{,}
            \hlkwc{col_names}\hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{sheet} \hlstd{=} \hlstr{"Sheet 1"}\hlstd{)}
 \end{alltt}
 \end{kframe}

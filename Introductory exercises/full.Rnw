@@ -68,11 +68,15 @@ The \texttt{foreign} package provides functions to import data from files associ
 
 <<eval=FALSE>>=
 #Read from a csv-file with column names in a header
-read.csv("C:\\Users\\Bingo\\Documents\\data1.csv", header = T)
+#The file must be located in the current working directory.
+getwd() #See current working directory
+#Set new working directory.
+setwd("C:\\Users\\Bingo\\Documents") 
+read.csv("data1.csv", header = T)
 
 #Load readxl package and read Sheet 1 in excel file data1
 library(readxl) #Load package readxl
-read_excel("C:\\Users\\Bingo\\Documents\\data1.xlsx", 
+read_excel("data1.xlsx", 
            col_names= TRUE, sheet = "Sheet 1")
 @
 
