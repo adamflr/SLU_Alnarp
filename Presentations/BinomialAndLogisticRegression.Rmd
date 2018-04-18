@@ -32,7 +32,7 @@ data2$trials <- 6
 data2
 ```
 
-Instead of one row per insect `data2` contains one row per sex-treatment combination. The response `pos` gives the number of positives out of the 6 trials.
+Instead of one row per insect, `data2` contains one row per sex-treatment combination. The response `pos` gives the number of positives out of the 6 trials.
 
 #Logistic regression and binomial regression
 ##Fixed effects

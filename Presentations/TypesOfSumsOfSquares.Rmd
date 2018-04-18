@@ -1,6 +1,6 @@
 ---
 title: "Types of Sums of Squares in R"
-output: html_document
+output: github_document
 ---
 #Types of SS
 In unbalanced factorial designs, there is no clear decompositon of the total sum of square into parts explained by each factor.
