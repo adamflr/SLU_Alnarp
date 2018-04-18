@@ -1,6 +1,6 @@
 ---
 title: "Types of Sums of Squares in R"
-output: github_document
+output: html_document
 ---
 #Types of SS
 In unbalanced factorial designs, there is no clear decompositon of the total sum of square into parts explained by each factor.
@@ -35,7 +35,7 @@ library(car)
 Anova(lm(y ~ A * B, .a), type = 2)
 ```
 
-We can now identify the calculation of the sums of squares: $SS_A$ is the decrease in $SSE$ when the model with factor A and factor B is compared to the model with only factor B; SS_B is similar; $SS_{A\_B}$ is the decrease in $SSE$ when the full-factorial model is compared to the model with factor A and factor B.
+We can now identify the calculation of the sums of squares: $SS_{A}$ is the decrease in $SSE$ when the model with factor A and factor B is compared to the model with only factor B; SS_B is similar; $SS_{A\_B}$ is the decrease in $SSE$ when the full-factorial model is compared to the model with factor A and factor B.
 
 We make a similar calculation demonstrating sums of squares of type III. Note that specific contrasts must be set in order to get correct results from the Anova function.
 
