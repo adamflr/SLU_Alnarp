@@ -80,7 +80,7 @@ A possible disadvantage would be that the smaller model does not always make int
 ###The Case for Type II
 The main advantage of SS type II must be the greater power for the main effects, in comparison to type III.
 A simple example in an unbalanced design is given below.
-The p-value of the F-test differs greatly between SS type II and SS type III.
+The p-value of the F-test on the effect of factor $B$ differs greatly between SS type II and SS type III.
 In the type III case, the main effect is underestimated because of confounding with the interaction effect.
 
 ```{r}
