@@ -1,8 +1,11 @@
 ---
 title: "Types of Sums of Squares in R"
 output: pdf_document
+geometry: margin=1.6in
 ---
-##Introduction
+
+## Introduction
+
 In unbalanced factorial designs, there is no clear decompositon of the total sum of square into parts explained by each factor.
 Commercial software has introduced a taxonomy of four types of possible decomposition methods.
 Say that one has a model with two factors $A$ and $B$ and the interaction. Let $SSE$ denote the sum of squared errors (the residuals of the model).
@@ -19,7 +22,7 @@ Then the four types are given as follows.
 This piece mainly concerns the difference between type II and type III, as those are the most common choices.
 We develop the description of the two types using an example.
 
-##Numeric example
+## Numeric example
 
 We create a pseudo-random dataset with two binary factors $A$ and $B$. A third variable $A_B$ is calculated as the indicator of $A=B$ and the response $y$ is created so that there is an effect of factor $B$ but not of factor $A$ or the interaction.
 
@@ -69,15 +72,15 @@ So the SS type III is the decrease in $SSE$ when the interaction model is compar
 
 These examples generalize to models with more factors with more factor levels, but not completely without difficulties as the factors must be codified into numeric variables.
 
-##Choice of type
+## Choice of type
 
-###The Case for Type III
+### The Case for Type III
 Sums of squares of type III is default in most commercial programs (SPSS, Minitab and SAS, the latter being the origin of the formulation) and more common in publications than type II.
 Type III also has the advantage that the baseline remains the same, regardless of whether one is doing inference on an interaction or on a main effect. This might simplify calculations (?) and interpretation.
 
 A possible disadvantage would be that the smaller model does not always make intuitive sense - the model with an interaction such as $A\_B$, but without the connected main effect, $A$ or $B$, is seldom used in practice.
 
-###The Case for Type II
+###  Case for Type II
 The main advantage of SS type II must be the greater power for the main effects, in comparison to type III.
 A simple example in an unbalanced design is given below.
 The p-value of the F-test on the effect of factor $B$ differs greatly between SS type II and SS type III.
@@ -102,7 +105,7 @@ Anova(mod, type = 2)
 Anova(mod, type = 3)
 ```
 
-##Type III in R
+## Type III in R
 So far, we have only briefly touched upon the practicalities of calculating the different types of square sums in R. It turns out that this is an area where it is quite easy to make mistakes. Note that for balanced data, all types of sums of squares should give the same result, and see the following example which calculates the anova table using the `anova` function for type I and the `Anova` function from the `car` package for types II and III.
 
 ```{r}
