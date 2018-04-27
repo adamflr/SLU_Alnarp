@@ -8,11 +8,6 @@ output:
     center: true
 ---
 
-```{r, echo = FALSE, results='hide', fig.show='hide'}
-knitr::purl("rm_example.rmd")
-source("rm_example.R")
-```
-
 # Descriptive Statistics
 
 ## Table

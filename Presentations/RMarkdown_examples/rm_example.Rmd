@@ -12,7 +12,7 @@ references:
   author:
   - family: Bates
     given: Douglas
-  - family: Mächler
+  - family: Machler
     given: Martin
   - family: Bolker
     given: Ben
@@ -29,7 +29,8 @@ references:
 
 # Introduction
 
-This is a short example of the R Markdown features available using the packages `rmarkdown`, `knitr` and more. It gives examples of the following:
+There is a number of ways to incorporate R code and ordinary text into a single coherent paper. The most popular way is to write code and text in the Markdown format. Markdown is a mark-up language, meaning that code is written in an ordinary text file and then compiled into a desirable format, for example a pdf file or a Word document.
+This is a short example of the R Markdown features available in R using the packages `rmarkdown` and `knitr`. It gives examples of the following:
 
 - Lists
 - Figures
@@ -37,22 +38,19 @@ This is a short example of the R Markdown features available using the packages 
 - References
 
 The data `oats` from the `MASS` package is used as example data.  
+We load the dataset with the following code. In this document the R code is shown, but it is easy to hide the code and only show the results.
 
-# Example output
-
-```{r, echo = F}
+```{r, echo = T}
 dat <- MASS::oats
 ```
 
-## Data description
-
-The data comes from an experiment on the yield of different varieties of oat. The experiment has two factors, the variety (Golden Rain, Mavellous, and Victory) and the level of added nitrogen (0, 0.2, 0.4, and 0.6 cwt), and is set up as a split-plot design with variety as main-plot and nitrogen level as sub-plot. There are six blocks containing all variety and nitrogen combinations, giving a total of 72 observations.
+# Example output
 
 ## Descriptive statistics
 
-The data can be presented in table form, summarized for each variety and nitrogen combination.
+The data can be presented in table form, summarized for each variety and nitrogen combination. The following code summarizes the dataset and presents it as table using the `kable` function from the `knitr` package.
 
-```{r, echo = F}
+```{r, echo = T}
 dat_agg <- aggregate(Y ~ V + N, dat, function(x) c(mean(x), sd(x)))
 dat_agg[,1] <- as.character(dat_agg[,1])
 dat_agg <- data.frame(dat_agg[, 1:2], dat_agg[, 3])
@@ -61,17 +59,19 @@ dat_agg[dat_agg$Variety == "Golden.rain", 1] <- "Golden Rain"
 dat_agg <- dat_agg[order(dat_agg$Variety), ]
 
 knitr::kable(dat_agg, digits = 2, 
-             caption = "Mean and standard deviation of yield per variety and nitrogen combination.",
+             caption = "Mean and standard deviation of yield 
+             per variety and nitrogen combination.",
              row.names = F)
 
 ```
 
-This can be visualized in a bar chart.
+This can be visualized in a bar chart. The `ggplot2` package is used to construct the plot.
 
-```{r, echo = F, fig.width = 4.5, fig.height = 3.5, fig.cap="Mean of yield per variety and nitrogen combination. Error bars give standard deviation."}
+```{r, echo = T, fig.width = 4.5, fig.height = 3.5, fig.cap="Mean of yield per variety and nitrogen combination. Error bars give standard deviation."}
 library(ggplot2)
 barchart <- ggplot(dat_agg, aes(Variety, Mean, fill = Nitrogen)) + 
-  geom_bar(stat = "identity", position = position_dodge(), col = "black") +
+  geom_bar(stat = "identity", position = position_dodge(), 
+           col = "black") +
   geom_errorbar(aes(ymin = Mean - Std.dev,
                     ymax = Mean + Std.dev),
                 position = position_dodge(0.9),
@@ -83,9 +83,9 @@ print(barchart)
 
 ## Anova model of split-plot experiment
 
-The data is analyzed as a mixed model using variety and nitrogen level as fixed factors, and block and interaction between block and variety as random factors. The results are given below. The model specifies a significant effect of nitrogen level, but not of variety.
+The data is analyzed as a mixed model using variety and nitrogen level as fixed factors, and block and interaction between block and variety as random factors. The results are given below. The model specifies a significant effect of nitrogen level, but not of variety. Once again, the `kable` function prints the table in a presentable form.
 
-```{r, echo = F, message = F}
+```{r, echo = T, message = F}
 library(lme4, quietly = T)
 library(lmerTest, quietly = T)
 
@@ -99,10 +99,11 @@ knitr::kable(anovaTable <- anova(mod), digits = 2,
 
 The estimated mean values of the nitrogen levels are calculated and tested for differences.
 
-```{r, echo = F, message = F}
+```{r, echo = T, message = F}
 library(emmeans, quietly = T)
 
-knitr::kable(emmeansTable <- cld(emmeans(mod, "Nitrogen")), digits = 2,
+knitr::kable(emmeansTable <- cld(emmeans(mod, "Nitrogen")), 
+             digits = 2,
              caption = "Comparison between levels of nitrogen.")
 ```
 
@@ -111,5 +112,7 @@ These tables could obviously need a little more cleaning up.
 ## A reference
 
 The Markdown format can handle references in a simple way. For example, the anova model was estimated with the `lmer` function from the package `lme4` [@lme4].
+
+The code to construct the reference is simply `[@lme4]` where the part in square brackets is linked to the full reference, which is printed in the last part of the document. In this case the reference is specified in the introduction of the `.Rmd` file, but references can also be stored in a separate file and handled using special software.
 
 # References
