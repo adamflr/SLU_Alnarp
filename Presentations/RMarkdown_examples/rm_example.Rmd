@@ -1,0 +1,115 @@
+---
+title: "Example of Output of R Markdown"
+author: No Name
+output: pdf_document
+geometry: margin=1.7in
+numbersections: true
+toc: true
+abstract: "R includes some features that might simplify the writing process by making it possible to gather data analysis and writing in a single document. This makes it easier to reproduce ones analysis in case the data is changed and to produce presentable papers for self-publishing. This presentation gives a brief example of some of these features."
+references:
+- id: lme4
+  title: Fitting Linear Mixed-Effects Models Using lme4
+  author:
+  - family: Bates
+    given: Douglas
+  - family: Mächler
+    given: Martin
+  - family: Bolker
+    given: Ben
+  - family: Walker
+    given: Steve
+  container-title: Journal of Statistical Software
+  volume: 67
+  issue: 1
+  page: 1-48
+  type: article-journal
+  issued:
+    year: 2015
+---
+
+# Introduction
+
+This is a short example of the R Markdown features available using the packages `rmarkdown`, `knitr` and more. It gives examples of the following:
+
+- Lists
+- Figures
+- Tables
+- References
+
+The data `oats` from the `MASS` package is used as example data.  
+
+# Example output
+
+```{r, echo = F}
+dat <- MASS::oats
+```
+
+## Data description
+
+The data comes from an experiment on the yield of different varieties of oat. The experiment has two factors, the variety (Golden Rain, Mavellous, and Victory) and the level of added nitrogen (0, 0.2, 0.4, and 0.6 cwt), and is set up as a split-plot design with variety as main-plot and nitrogen level as sub-plot. There are six blocks containing all variety and nitrogen combinations, giving a total of 72 observations.
+
+## Descriptive statistics
+
+The data can be presented in table form, summarized for each variety and nitrogen combination.
+
+```{r, echo = F}
+dat_agg <- aggregate(Y ~ V + N, dat, function(x) c(mean(x), sd(x)))
+dat_agg[,1] <- as.character(dat_agg[,1])
+dat_agg <- data.frame(dat_agg[, 1:2], dat_agg[, 3])
+names(dat_agg) <- c("Variety", "Nitrogen", "Mean", "Std.dev")
+dat_agg[dat_agg$Variety == "Golden.rain", 1] <- "Golden Rain"
+dat_agg <- dat_agg[order(dat_agg$Variety), ]
+
+knitr::kable(dat_agg, digits = 2, 
+             caption = "Mean and standard deviation of yield per variety and nitrogen combination.",
+             row.names = F)
+
+```
+
+This can be visualized in a bar chart.
+
+```{r, echo = F, fig.width = 4.5, fig.height = 3.5, fig.cap="Mean of yield per variety and nitrogen combination. Error bars give standard deviation."}
+library(ggplot2)
+barchart <- ggplot(dat_agg, aes(Variety, Mean, fill = Nitrogen)) + 
+  geom_bar(stat = "identity", position = position_dodge(), col = "black") +
+  geom_errorbar(aes(ymin = Mean - Std.dev,
+                    ymax = Mean + Std.dev),
+                position = position_dodge(0.9),
+                width = 0.3) +
+  theme_bw() +
+  scale_fill_grey()
+print(barchart)
+```
+
+## Anova model of split-plot experiment
+
+The data is analyzed as a mixed model using variety and nitrogen level as fixed factors, and block and interaction between block and variety as random factors. The results are given below. The model specifies a significant effect of nitrogen level, but not of variety.
+
+```{r, echo = F, message = F}
+library(lme4, quietly = T)
+library(lmerTest, quietly = T)
+
+names(dat) <- c("Block", "Variety", "Nitrogen", "Yield")
+mod <- lmer(Yield ~ Variety + Nitrogen + (1 | Block / Variety), dat)
+
+knitr::kable(anovaTable <- anova(mod), digits = 2, 
+             caption = "Anova results of analysis of yield.",
+             row.names = T)
+```
+
+The estimated mean values of the nitrogen levels are calculated and tested for differences.
+
+```{r, echo = F, message = F}
+library(emmeans, quietly = T)
+
+knitr::kable(emmeansTable <- cld(emmeans(mod, "Nitrogen")), digits = 2,
+             caption = "Comparison between levels of nitrogen.")
+```
+
+These tables could obviously need a little more cleaning up.
+
+## A reference
+
+The Markdown format can handle references in a simple way. For example, the anova model was estimated with the `lmer` function from the package `lme4` [@lme4].
+
+# References

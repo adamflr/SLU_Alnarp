@@ -1,0 +1,52 @@
+---
+title: "Analysis of Yield in Oats"
+author: No Name
+date: May 29, 2018
+output:
+  revealjs::revealjs_presentation:
+    theme: serif
+    center: true
+---
+
+```{r, echo = FALSE, results='hide', fig.show='hide'}
+knitr::purl("rm_example.rmd")
+source("rm_example.R")
+```
+
+# Descriptive Statistics
+
+## Table
+
+```{r, echo = FALSE}
+knitr::kable(dat_agg, caption = "Mean yield per variety and nitrogen combination.", row.names = F, digits = 2)
+```
+
+## Barchart
+
+```{r, fig.cap="Barchart of mean per variety and nitrogen level. Error bars signify standard deviation.", echo = FALSE, fig.height=4, fig.width=4}
+print(barchart)
+```
+
+## Comments
+
+- Clear increase in yield for higher nitrogen levels.
+- No clear differences between varieties.
+
+# Anova Analysis
+
+## Anova table
+
+```{r, echo = FALSE}
+knitr::kable(anovaTable, caption = "Anova results for split-plot model.", digits = 2)
+```
+
+## Estimated means
+
+```{r, echo = FALSE}
+knitr::kable(emmeansTable, caption = "Estimated means based on model.", digits = 2)
+```
+
+## Comments
+
+- No significant difference between varieties.
+- Significant increase in yield as nitrogen increases.
