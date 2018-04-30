@@ -29,7 +29,7 @@ references:
 
 # Introduction
 
-There is a number of ways to incorporate R code and ordinary text into a single coherent paper. The most popular way is to write code and text in the Markdown format. Markdown is a mark-up language, meaning that code is written in an ordinary text file and then compiled into a desirable format, for example a pdf file or a Word document.
+There are a number of ways to incorporate R code and ordinary text into a single coherent paper. The most popular way is to write code and text in the Markdown format. Markdown is a mark-up language, meaning that code is written in an ordinary text file and then compiled into a desirable format, for example a pdf file or a Word document.
 This is a short example of the R Markdown features available in R using the packages `rmarkdown` and `knitr`. It gives examples of the following:
 
 - Lists
