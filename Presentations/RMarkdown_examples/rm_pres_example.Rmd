@@ -13,6 +13,8 @@ output:
 ## Table
 
 ```{r, echo = FALSE}
+knitr::purl("rm_example.rmd")
+source("rm_example.R")
 knitr::kable(dat_agg, caption = "Mean yield per variety and nitrogen combination.", row.names = F, digits = 2)
 ```
 
