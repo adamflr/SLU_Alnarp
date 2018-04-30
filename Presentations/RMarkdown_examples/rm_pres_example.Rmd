@@ -12,7 +12,7 @@ output:
 
 ## Table
 
-```{r, echo = FALSE, fig.show='hide', results='hide'}
+```{r, echo = FALSE, fig.show='hide', results='hide', message=FALSE}
 knitr::purl("rm_example.rmd")
 source("rm_example.R")
 ```
