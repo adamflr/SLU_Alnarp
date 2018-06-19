@@ -11,5 +11,6 @@ Collected material used for presentations and informal explanations.
 
 ## Given presentations
 
-
+## Example sets
+- [Examples on RMarkdown](https://github.com/adamflr/SLU_Alnarp/tree/master/Presentations/RMarkdown_examples): a set of examples of RMarkdown for a report and a presentation. The latter using the reveal.js format.
 
