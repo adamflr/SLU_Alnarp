@@ -1,0 +1,61 @@
+---
+title: "Numbering tables in Word"
+author: "Unit of Applied Statistics - SLU Alnarp"
+output:
+  word_document: 
+    reference_docx: refdoc.docx
+numbersections: yes
+---
+
+# Two numbered tables
+
+```{r}
+dat <- data.frame(Treatment = LETTERS[1:4],
+                  Mean = round( runif(4), 3),
+                  SE = round( runif(4) / 10, 3)
+)
+
+tableIndex <- "tab1"
+
+knitr::kable(dat, 
+             caption = paste("Table ", 
+                             which(tableIndex == "tab1"), 
+                             ". The first table of means and standard deviations.", sep = ""))
+```
+
+```{r}
+dat <- data.frame(Treatment = LETTERS[1:4],
+                  Mean = round( runif(4), 3),
+                  SE = round( runif(4) / 10, 3)
+)
+
+tableIndex <- c(tableIndex, "tab2")
+
+knitr::kable(dat, 
+             caption = paste("Table ", 
+                             which(tableIndex == "tab2"), 
+                             ". The second table of means and standard deviations.", sep = ""))
+```
+
+We make a reference to Table `r which(tableIndex == "tab2")` and Table `r which(tableIndex == "tab1")`.
+
+# Two numbered figures
+
+```{r, fig.cap=paste("Figure ", which(figIndex == "fig1"), ". The first plot.", sep="")}
+dat <- data.frame(x = rnorm(100))
+dat$y <- cos(dat$x) + rnorm(100, sd = 0.1)
+
+figIndex <- "fig1"
+plot(y ~ x, dat)
+```
+
+```{r, fig.cap=paste("Figure ", which(figIndex == "fig2"), ". The second plot.", sep="")}
+dat <- data.frame(x = rnorm(100))
+dat$y <- cos(dat$x) + rnorm(100, sd = 0.1)
+
+figIndex <- c(figIndex, "fig2")
+plot(y ~ x, dat)
+```
+
+We can now make a reference to Figure `r which(figIndex == "fig1")` and Figure `r which(figIndex == "fig2")`.
+

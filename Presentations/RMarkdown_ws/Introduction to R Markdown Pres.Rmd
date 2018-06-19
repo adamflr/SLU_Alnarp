@@ -1,0 +1,207 @@
+---
+title: "Presentations in R Markdown"
+author: "Unit of Applied Statistics - SLU Alnarp"
+date: June 12 2018
+output:
+  revealjs::revealjs_presentation:
+    css: style1.css
+    self_contained: false
+---
+
+## Introduction
+
+>- Mix R code and Markdown to make a presentation
+>- Get a uniform layout
+>- Reproduce presentation with new data
+>- Get your presentation as an html file
+
+## Tools
+
+- R packages `knitr` and `rmarkdown`
+- Pandoc
+- A Tex installation (optional)
+- A presentation package: Slidy, ioslides, Beamer (pdf), revealjs (`revealjs` package)
+
+This presentation uses Revealjs
+
+## The script
+
+An Rmd file containing:
+
+- A header
+- Markdown text
+- R chunks
+
+## A header
+
+Specifies the properties and options of the file
+
+Starts and ends with three dashes
+
+Specifics depend on the [format](https://rmarkdown.rstudio.com/formats.html)
+
+```
+---
+title: "Presentations in R Markdown"
+author: "Unit of Applied Statistics - SLU Alnarp"
+date: June 12 2018
+output: revealjs::revealjs_presentation
+---
+```
+
+## Text
+
+Text written in Markdown
+
+```
+## Header of new slide
+
+- List item 1
+- List item 2
+
+![](name_of_a_picture.jpg)
+
+[Text of link](http://www.slu.se)
+```
+
+## Chunks
+
+R code is written in chunks such as
+
+```{r, comment = "", echo = FALSE}
+write("\`\`\`{r}", file = "")
+write("", file = "")
+write("R code goes here", file = "")
+write("", file = "")
+write("\`\`\`", file = "")
+```
+
+Specific options may be set in the curly bracket: `echo = FALSE`.
+
+In-line r code is enclosed in ticks and start with a single r:
+
+```{r, echo = F, comment = ""}
+write("\`r R_code\`", file = "")
+```
+
+## Tables
+
+The knitr::kable function produces functionable tables
+
+```{r}
+dat <- data.frame(Treatment = LETTERS[1:4], 
+                  Effect = round(rexp(4), 2), 
+                  StD = round(0.1 * runif(4), 2))
+
+knitr::kable(dat)
+```
+
+## Figures
+
+Plots are printed on the slide if produced in the R chunk
+
+```{r, results = 'hide', fig.show='hide'}
+dat <- data.frame(x = sort(runif(500, -pi, pi)))
+dat$y <- sin(dat$x) + 0.2 * dat$x + rnorm(500, sd = 0.1)
+
+mod <- lm(y ~ 1 + x + I(x^2) + I(x^3) + I(x^4), dat)
+plot(y ~ x, dat, pch = ".")
+lines(dat$x, predict(mod), lwd = 2)
+```
+
+Some figure properties (such as size) can be set in the chunk options.
+
+## Figures, cont.
+
+```{r, echo = F}
+dat <- data.frame(x = sort(runif(500, -pi, pi)))
+dat$y <- sin(dat$x) + 0.2 * dat$x + rnorm(500, sd = 0.1)
+
+mod <- lm(y ~ 1 + x + I(x^2) + I(x^3) + I(x^4), dat)
+plot(y ~ x, dat, pch = ".")
+lines(dat$x, predict(mod), lwd = 2)
+```
+
+
+## Figures. Plotly
+
+Interactive plots using `ploly`
+
+```{r, message = F, eval = FALSE}
+library(plotly)
+library(ggplot2)
+dat <- data.frame(Treatment = rep(LETTERS[1:4], 100),
+                  x = runif(100) + 0.3 * (1:4), y = runif(100))
+
+p <- ggplot(dat, aes(x, y, col = Treatment)) + geom_point()
+ggplotly(p)
+```
+
+## Figures. Plotly, cont.
+
+
+```{r, message = F, echo = FALSE}
+library(plotly)
+library(ggplot2)
+dat <- data.frame(Treatment = rep(LETTERS[1:4], 100),
+                  x = runif(100) + 0.3 * (1:4), y = runif(100))
+
+p <- ggplot(dat, aes(x, y, col = Treatment)) + geom_point()
+ggplotly(p)
+```
+
+## Layout
+
+Preset layouts
+
+```
+---
+title: "Presentations in R Markdown"
+author: "Unit of Applied Statistics - SLU Alnarp"
+date: June 12 2018
+output: 
+  revealjs::revealjs_presentation:
+    theme: sky
+---
+```
+
+Specified CSS file
+
+```
+---
+title: "Presentations in R Markdown"
+author: "Unit of Applied Statistics - SLU Alnarp"
+date: June 12 2018
+output:
+  revealjs::revealjs_presentation:
+    css: style1.css
+    self_contained: false
+---
+```
+
+## Presentation features
+
+Depends on format ([see help pages](https://rmarkdown.rstudio.com/formats.html))
+
+## HTML syntax
+
+Slidy, ioslides and Revealjs render to HTML files
+
+Possible to include HTML syntax in the R Markdown file
+
+## Object placement
+
+<img src="bild.jpg" style="float:left;width:40%;">
+
+<p style="text-align:right;">
+The horse skeleton averages 205 bones. A significant difference between the horse skeleton and that of a human is the lack of a collarbone - the horse's forelimbs are attached to the spinal column by a powerful set of muscles, tendons, and ligaments that attach the shoulder blade to the torso.
+</p>
+
+## Youtube videos
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cI3gZJHJbZc?rel=0&amp;start=109" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+## Interactive HTML objects
+
+<iframe src="var6maxNbInfmaxDInf.html" style="position:relative;height:600px;width:650px;">
+</iframe>
