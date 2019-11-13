@@ -4,6 +4,8 @@ div{
 	border: 5px;
 	border-style: solid;
 	background-image: url("img_tree.gif");
+	background-repeat: no-repeat;
+	background-position: right bottom;
 }
 
 body{
