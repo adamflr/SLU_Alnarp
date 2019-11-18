@@ -11,14 +11,14 @@ body
 {
   margin: 0 0 0 0;
   padding: 0 0 0 0;
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: 100%;
   color: black;
   background-color: transparent;
   font-family: Arial, sans-serif;
   font-size: 14pt;
-  left: 10%;
-  top: 10%;
+  left: 0%;
+  top: 0%;
 }
 
 div.toolbar {
@@ -97,12 +97,12 @@ div.slide {
   clear: both;
   top: 20%;
   bottom: 0;
-  left: 10%;
-  right: 20%;
+  left: 0%;
+  right: 0%;
   line-height: 120%;
   background-image: url("img_tree.gif");
   background-repeat: no-repeat;
-  background-position: right -50px bottom;
+  background-position: right 0px bottom;
 }
 
 div.background {
