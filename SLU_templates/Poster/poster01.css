@@ -1,0 +1,28 @@
+body{
+	width:90%;
+	height:5000px;
+}
+
+#topofposter{
+	background-color: red;
+	height: 15%;
+}
+
+#middleofposter{
+	background-color: blue;
+	height: 70%;
+}
+
+#bottomofposter{
+	background-color: yellow;
+	height: 15%;
+}
+
+#toplogo{
+	height:100%;
+	width:100%;
+	background-image: url("header.jpg");
+	background-repeat: no-repeat;
+	background-size: 110% 50%;
+	background-position: top;
+}
