@@ -1,0 +1,235 @@
+---
+title: "Introduction to R"
+output: 
+  revealjs::revealjs_presentation:
+    css: style1.css
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5)
+library(tidyverse)
+theme_set(theme_bw())
+```
+
+## Content
+
+History
+
+Example session
+
+Further topics
+
+## R
+
+Free statistical software
+
+Developed in the 1990s from *S*
+
+### RStudio
+
+The most popular interface to R
+
+## Packages
+
+Add-ons through user-developed *packages*, published on *CRAN* (the Comprehensive R Archive Network)
+
+15 200 packages by November 2019
+
+### Tidyverse
+
+A popular collection of packages, including ggplot2 and dplyr
+
+## Functions and objects
+
+Create an objct by assigning information to a name
+
+```{r}
+a <- c(1,2,3)
+```
+
+Apply function by `function(options)`
+
+```{r}
+mean(a)
+```
+
+## Troubleshooting
+
+Function information available using `?function_name`
+
+```{r}
+?sum
+```
+
+Google
+
+Stack Overflow
+
+### A common SLU problem
+
+Problems installing packages to external SLU server
+
+## Data for today
+
+Observations of *Nymphalis antiopa* 2019
+
+Export from *Artportalen*
+
+1889 observations
+
+Location and time
+
+```{r, message=F}
+library(readxl)
+dat_sm <- read_excel("Z://Data/ExcelExport_1.xlsx", 
+                     skip = 2, col_types = "text")
+```
+
+## Packages
+
+ggplot2 - Plotting using *Grammar of Graphics*
+
+dplyr, tidyr - Data handling
+
+rmarkdown - Creating reports and presentations
+
+magrittr - Piping
+
+```{r, message=F}
+library(tidyverse)
+```
+
+## Piping
+
+The pipe `%>%` connects two functions
+
+The output of the first function is used as input to the second
+
+```{r, eval = T}
+dat_sm %>% # Take the data, then ...
+  count(Län) %>% # count by län, then ...
+  ggplot(aes(n, reorder(Län, n))) + 
+  geom_point() + ylab("") + xlab("") -> g_obs # plot and store
+```
+
+##
+
+```{r, echo = T}
+g_obs
+```
+
+## Common operations
+
+Select columns
+
+Filter rows (subsetting)
+
+Transform variables
+
+Summarise by a category
+
+Merge datasets
+
+## Select and filter
+
+Do some counties give longer comments?
+
+```{r}
+dat_sm %>% # Take the data, then ...
+  select(Län, Kommentar) %>% # select columns, then ...
+  filter(is.na(Kommentar) == FALSE) %>% # filter rows, then ...
+  mutate(Comment_length = nchar(Kommentar)) %>% 
+  # calculate comment length, then ...
+  group_by(Län) %>% # group the data by county, then ...
+  summarise(Mean_length = mean(Comment_length),
+            Min = min(Comment_length),
+            Max = max(Comment_length)) %>% 
+  # take mean, min and max of comment length, then ...
+  ggplot(aes(Mean_length, reorder(Län, Mean_length))) +
+  geom_point() + 
+  geom_errorbarh(aes(xmin = Min, xmax = Max)) +
+  ylab("") + xlab("") -> g_com # plot and store
+```
+
+##
+
+```{r}
+g_com
+```
+
+## Population data
+
+```{r}
+dat_pop <- read_excel("Z://Data/BE0101N1.xlsx", skip = 5, 
+                      col_names = c("Kommun", "Män", "Kvinnor"))
+dat_pop %>% 
+  mutate(Population = Män + Kvinnor,
+         Kommun = substr(Kommun, 6, nchar(Kommun))) -> dat_pop
+```
+
+##
+
+```{r, message=F, fig.height=5, eval = F}
+library(plotly)
+ggplot(dat_pop, aes(log(Population), log(Män / Kvinnor), label = Kommun)) + 
+  geom_point() -> g_gen
+ggplotly(g_gen)
+```
+
+<iframe src="Figurer/graph.html" height=400 width=800></iframe>
+
+## Back to the task
+
+Seek the *number of reported observations per person by county*
+
+1. Summarise observations to municipality level
+
+2. Merge observation data and population data
+
+3. Summarise to county level
+
+## Reports by municipality
+
+```{r}
+dat_sm %>% 
+  group_by(Län, Kommun) %>% 
+  count() -> dat_sm_mun
+dat_sm_mun
+```
+
+## Merge datasets
+
+```{r}
+left_join(dat_sm_mun, dat_pop, by = "Kommun") -> dat_sm_pop
+dat_sm_pop
+```
+
+##
+
+```{r, eval = F}
+ggplot(dat_sm_pop, aes(log(Population), n, col = Län == "Stockholm", 
+                       label = Kommun)) + 
+  geom_point() -> g_obs_pop
+ggplotly(g_obs_pop)
+```
+
+<iframe src="Figurer/sm_pop1.html" height=400 width=800></iframe>
+
+## Reports by county
+
+```{r}
+dat_sm_pop %>% 
+  group_by(Län) %>% 
+  summarise(Observations = sum(n),
+            Population = sum(Population)) %>% 
+  mutate(Ratio = Observations / Population) %>% 
+  ggplot(aes(Ratio, reorder(Län, Ratio))) + 
+     geom_point() + ylab("") + xlab("") -> g_obs_per_cap # plot and store
+```
+
+##
+
+```{r}
+g_obs_per_cap
+```
