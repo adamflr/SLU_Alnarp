@@ -6,6 +6,7 @@ library(dplyr)
 
 dat %>% 
   mutate(brain = brain / 1000,
+<<<<<<< HEAD
          brain_to_body_ratio = brain / body,
          greater_than_1500 = body > 1500) -> dat
 
@@ -17,3 +18,6 @@ g <- ggplot(dat, aes(log(brain), log(body), color = greater_than_1500)) +
 g
 library(plotly)
 htmlwidgets::saveWidget(ggplotly(g), "Figurer/graph1.html")
+=======
+         brain_to_body_ratio = brain / body)
+>>>>>>> ec5eaddab2ce6e7fa3c29ff9ca3b8ee807a432f7
